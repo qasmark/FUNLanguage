@@ -1,0 +1,15 @@
+FUN MAIN
+CONST 
+	mathPI : double = 3.14;
+	mathE : float = 2.718;
+NOC
+VAR
+	a, b, c: int;
+	address, location: string;
+	statusOfWork: bool;
+RAV
+BEGIN
+
+// This part should be ready when we will think about rules for cicles etc.
+
+NUF
