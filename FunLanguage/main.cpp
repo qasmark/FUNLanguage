@@ -1,5 +1,6 @@
-#include <iostream>
 #include <fstream>
+import RDFor;
+
 
 int main()
 {
