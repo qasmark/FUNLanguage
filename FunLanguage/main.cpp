@@ -1,10 +1,9 @@
 #include <iostream>
 #include <fstream>
-
+#include "ReadAndWritAndListStatements.h"
 int main()
 {
-	std::ifstream fin("simple-example-of-code.txt");
-
-	return 0;
+	std::string str = "Read(1djdskds, sdsd)";
+	ParseRead(str);
 }
 // Visual Studio Community 2022

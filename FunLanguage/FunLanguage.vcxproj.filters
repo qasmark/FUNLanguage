@@ -23,6 +23,9 @@
     <ClInclude Include="ExceptionHandler.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="ReadAndWritAndListStatements.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="simple-example-of-code.txt" />

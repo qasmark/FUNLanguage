@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExceptionHandler.h" />
+    <ClInclude Include="ReadAndWritAndListStatements.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="simple-example-of-code.txt" />
