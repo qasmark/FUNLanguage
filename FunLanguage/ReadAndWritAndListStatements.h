@@ -42,7 +42,7 @@ bool ParseRead(std::string& str)
 	return true;
 }
 
-bool Write(std::string& str)
+bool ParseWrite(std::string& str)
 {
 	str.erase(remove(str.begin(), str.end(), ' '), str.end());
 	if (str.substr(0, 5) != "Write(")
@@ -83,7 +83,37 @@ bool Write(std::string& str)
 	return true;
 }
 
-void ListStatements()
+bool ParseSt(std::string& line)
 {
-	// return State || ListStatements()
+	// Реализация для <assignment>, <if>, <while>, <empty>, <for>, <read>, <write>
+
+	if (line[0] == '{')
+	{
+		line.erase(line.begin());
+		if (!ParseListStatements(line))
+		{
+			return false;
+		}
+		if (line[0] != '}')
+		{
+			return false;
+		}
+		line.erase(line.begin());
+		return true;
+	}
+
+	return false;
+}
+
+bool ParseListStatements(std::string& line)
+{
+	while (!line.empty() && line[0] != '}')
+	{
+		if (!ParseSt(line))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
