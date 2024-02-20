@@ -1,6 +1,5 @@
+#pragma once
 #include <iostream>
-
-export module RDFor;
 
 bool ParseFOR(std::string& line)
 {

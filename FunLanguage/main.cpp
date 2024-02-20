@@ -1,6 +1,4 @@
 #include <fstream>
-import RDFor;
-
 
 int main()
 {
