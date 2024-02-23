@@ -15,7 +15,7 @@ const std::string VAR = "var";
 
 void deleteSpaces(const std::string& text , int& i)
 {
-	while (text[i] == ' ' || text[i] == '\n')
+	while (text[i] == ' ' || text[i] == '\n' || text[i] == '\t')
 	{
 		i++;
 	}
@@ -56,7 +56,7 @@ std::string parseType(const std::string& text , int& i)
 	{
 		return type;
 	}
-	std::cout << "Syntax error: expected type" << std::endl;
+	//std::cout << "Syntax error: expected type" << std::endl;
 	throw std::runtime_error("Syntax error: expected type");
 }
 
@@ -173,12 +173,26 @@ std::string parseValue(const std::string& text , int& i , const std::string& typ
 	}
 }
 
+bool parseNoc(const std::string& text , int& i)
+{
+	if (text[i] == 'N' && text[i + 1] == 'O' && text[i + 2] == 'C')
+	{
+		i += 3;
+		return true;
+	}
+	return false;
+}
+
 void parseConstants(const std::string& text , int& i)
 {
 	deleteSpaces(text , i);
 	expect("CONST" , text , i);
 	while (true)
 	{
+		if (parseNoc(text , i))
+		{
+			break;
+		}
 		deleteSpaces(text , i);
 		parseIdentifier(text , i);
 
@@ -195,16 +209,14 @@ void parseConstants(const std::string& text , int& i)
 		parseValue(text , i , type);
 
 		deleteSpaces(text , i);
-		//expect(";" , text , i);
 		if (text[i] == ';')
 		{
 			i++;
 			continue;
 		}
 		deleteSpaces(text , i);
-		if (text[i] == 'N' && text[i + 1] == 'O' && text[i + 2] == 'C')
+		if (parseNoc(text , i))
 		{
-			i += 3;
 			break;
 		}
 	}
@@ -221,12 +233,27 @@ std::string parseIdentifierList(const std::string& text , int& i)
 	return identifier;
 }
 
+bool parseRav(const std::string& text , int& i)
+{
+	if (text[i] == 'R' && text[i + 1] == 'A' && text[i + 2] == 'V')
+	{
+		i += 3;
+		return true;
+	}
+
+	return false;
+}
+
 void parseVar(const std::string& text , int& i)
 {
 	deleteSpaces(text , i);
 	expect("VAR" , text , i);
 	while (true)
 	{
+		if (parseRav(text , i))
+		{
+			break;
+		}
 		deleteSpaces(text , i);
 		parseIdentifierList(text , i);
 
@@ -236,14 +263,7 @@ void parseVar(const std::string& text , int& i)
 		deleteSpaces(text , i);
 		const std::string type = parseType(text , i);
 
-		/*deleteSpaces(text , i);
-		expect("=" , text , i);
-
 		deleteSpaces(text , i);
-		parseValue(text , i , type);*/
-
-		deleteSpaces(text , i);
-		//expect(";" , text , i);
 		if (text[i] == ';')
 		{
 			i++;
@@ -251,9 +271,8 @@ void parseVar(const std::string& text , int& i)
 		}
 
 		deleteSpaces(text , i);
-		if (text[i] == 'R' && text[i + 1] == 'A' && text[i + 2] == 'V')
+		if (parseRav(text , i))
 		{
-			i += 3;
 			break;
 		}
 	}
@@ -267,7 +286,11 @@ bool DCLS(std::ifstream& file)
 		text += line + '\n';
 	}
 	int i = 0;
-	parseConstants(text , i);
+	deleteSpaces(text , i);
+	if (text[i] == 'C')
+	{
+		parseConstants(text , i);
+	}
 	parseVar(text , i);
 	return true;
 }
