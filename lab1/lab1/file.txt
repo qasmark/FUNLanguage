@@ -2,7 +2,7 @@ CONST
 	mathPI : double = 3.14;
 mathE : float = 2.718
 NOC
-VAR
+VAR  
 a, b, c: int;
 address, location: string;
 statusOfWork: bool

@@ -29,7 +29,7 @@ void expect(const std::string& expected , const std::string& text , int& i)
 	}
 	else
 	{
-		std::cout << "Syntax error: expected '" + expected + "'" << " but " << text.substr(i , expected.length()) << std::endl;
+		//std::cout << "Syntax error: expected '" + expected + "'" << " but " << text.substr(i , expected.length()) << std::endl;
 		throw std::runtime_error("Syntax error: expected '" + expected + "'");
 	}
 }
@@ -189,11 +189,11 @@ void parseConstants(const std::string& text , int& i)
 	expect("CONST" , text , i);
 	while (true)
 	{
+		deleteSpaces(text , i);
 		if (parseNoc(text , i))
 		{
 			break;
 		}
-		deleteSpaces(text , i);
 		parseIdentifier(text , i);
 
 		deleteSpaces(text , i);
@@ -229,7 +229,7 @@ std::string parseIdentifierList(const std::string& text , int& i)
 	{
 		identifier += text[i++];
 	}
-	std::cout << identifier << std::endl;
+	//std::cout << identifier << std::endl;
 	return identifier;
 }
 
@@ -250,11 +250,11 @@ void parseVar(const std::string& text , int& i)
 	expect("VAR" , text , i);
 	while (true)
 	{
+		deleteSpaces(text , i);
 		if (parseRav(text , i))
 		{
 			break;
 		}
-		deleteSpaces(text , i);
 		parseIdentifierList(text , i);
 
 		deleteSpaces(text , i);
