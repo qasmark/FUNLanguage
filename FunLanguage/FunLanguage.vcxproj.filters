@@ -23,7 +23,7 @@
     <ClInclude Include="ExceptionHandler.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ReadAndWritAndListStatements.h">
+    <ClInclude Include="ReadAndWritAndListStatements.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
