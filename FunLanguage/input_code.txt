@@ -1,0 +1,47 @@
+FUN MAIN
+CONST 
+	mathPI : double = 3.14;
+	mathE : float = 2.718;
+	sign : char = '-'
+NOC
+VAR  
+	a, b, c : int;
+	address, location : string;
+	statusOfWork : bool;
+	letter : char
+RAV
+BEGIN
+	READ(letter);
+	WRITE(a);
+	
+	IF letter = '1' THEN
+		b := 15;
+		c := -11 + b;
+	ELSE
+		b := 11;
+		c := -11 + b;
+	ENDIF
+
+	address := "Avenu 123 St";
+	location := "Himiko";
+	WRITE(address);
+	READ(letter);
+	
+	IF letter = '2' THEN
+		b := 16;
+		c := -12 + b;
+	ELSE 
+		IF letter = '3' THEN
+			b := 22;
+			c := 11 + b;
+		ENDIF
+	ENDIF
+
+	WRITE(a);
+	WRITE(b);
+	c := 21 * a + b;
+	
+	FOR I := 1 TO 21 DO
+		c := c + I * a;
+	ENDFOR
+END
