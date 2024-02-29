@@ -1,66 +1,69 @@
 #pragma once
 #include <iostream>
-#include <sstream>
+#include <vector>
 
 const std::string FOR_TERMINAL = "FOR";
 const std::string ASSIGNMENT_TERMINAL = ":=";
 const std::string TO_TERMINAL = "TO";
 const std::string DO_TERMINAL = "DO";
+const std::string ENDFOR_TERMINAL = "ENDFOR";
 
 void DeleteSpaces(std::string& line)
 {
 	line.erase(remove(line.begin(), line.end(), ' '), line.end());
 }
 
-bool ParseFOR(std::stringstream& strm)
+bool ParseFOR(std::vector<std::string>& vec)
 {
-	std::string line;
-	strm >> line;
+	for (size_t i = 0; i < vec.size(); i++)
+	{
+		DeleteSpaces(vec[i]);
+	}
 
-	DeleteSpaces(line);
-
-	if (line.substr(0, 3) != FOR_TERMINAL)
+	if (vec[0] != FOR_TERMINAL)
 	{
 		std::cout << "Syntax error: expected \'" + FOR_TERMINAL + "\', line: pos:" << std::endl; // from lexer
 		return false;
 	}
-	line.erase(0, 3);
-	if (!ParseIdent(line))
+	
+	if (!ParseIdent(vec[1]))
 	{
 		std::cout << "Syntax error: expected \'identifier\', line: pos:" << std::endl; // from lexer
 		return false;
 	}
-	if (line.substr(0, 2) != ASSIGNMENT_TERMINAL)
+	if (vec[2] != ASSIGNMENT_TERMINAL)
 	{
 		std::cout << "Syntax error: expected \'" + ASSIGNMENT_TERMINAL + "\', line: pos:" << std::endl; // from lexer
 		return false;
 	}
-	line.erase(0, 2);
-	if (!ParseSimpleExpr)
+	if (!ParseSimpleExpr(vec[3]))
 	{
 		std::cout << "Syntax error: expected \'simple expression\', line: pos:" << std::endl; // from lexer
 		return false;
 	}
-	if (line.substr(0, 2) != TO_TERMINAL)
+	if (vec[4] != TO_TERMINAL)
 	{
 		std::cout << "Syntax error: expected \'" + TO_TERMINAL + "\', line: pos:" << std::endl; // from lexer
 		return false;
 	}
-	line.erase(0, 2);
-	if (!ParseSimpleExpr)
+	if (!ParseSimpleExpr(vec[5]))
 	{
 		std::cout << "Syntax error: expected \'simple expression\', line: pos:" << std::endl; // from lexer
 		return false;
 	}
-	if (line.substr(0, 2) != DO_TERMINAL)
+	if (vec[6] != DO_TERMINAL)
 	{
 		std::cout << "Syntax error: expected \'" + DO_TERMINAL + "\', line: pos:" << std::endl; // from lexer
 		return false;
 	}
-	line.erase(0, 2);
-	if (!ParseSt(line))
+	if (!ParseSt(vec[7]))
 	{
 		std::cout << "Syntax error: expected \'statement\', line: pos:" << std::endl; // from lexer
+		return false;
+	}
+	if (vec[7] != ENDFOR_TERMINAL)
+	{
+		std::cout << "Syntax error: expected \'" + ENDFOR_TERMINAL + "\', line: pos:" << std::endl; // from lexer
 		return false;
 	}
 	return true;
