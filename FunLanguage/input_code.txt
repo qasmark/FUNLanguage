@@ -44,4 +44,8 @@ BEGIN
 	FOR I := 1 TO 21 DO
 		c := c + I * a;
 	ENDFOR
+
+	FOR J := 1 TO 50 DO
+		c := c + J * a;
+	ENDFOR
 END
