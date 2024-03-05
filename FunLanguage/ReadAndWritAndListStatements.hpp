@@ -69,7 +69,12 @@ bool ParseRead(std::string& str)
 
             findSymbol = str.find(")");
 
-            if (findSymbol != std::string::npos && !firstIdentifier)
+            if (findSymbol == std::string::npos)
+            {
+                PrintSyntaxError(SYNTAX_ERROR_READ, index + findSymbol);
+                return false;
+            }
+            else 
             {
                 if (!CheckIdentifier(str.substr(0, findSymbol), index, findSymbol)) // последний идентификатор чекаем
                 {
@@ -77,11 +82,6 @@ bool ParseRead(std::string& str)
                 }
 
                 break;
-            }
-            else
-            {
-                PrintSyntaxError(SYNTAX_ERROR_READ, index + findSymbol);
-                return false;
             }
         }
 
@@ -93,7 +93,9 @@ bool ParseRead(std::string& str)
         }
 
         str.erase(0, findSymbol);
+
         index += findSymbol;
+
         firstIdentifier = false;
     }
 
