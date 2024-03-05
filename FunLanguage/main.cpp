@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-import RDWhile
+import RDWhile;
 
 
 int main()
@@ -9,4 +9,3 @@ int main()
 
 	return 0;
 }
-// Visual Studio Community 2022
