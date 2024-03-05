@@ -19,8 +19,18 @@ void DeleteSpace(std::string& str)
     str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
 }
 
+bool CheckIdentifier(const std::string& tempStr, size_t index, size_t findSymbol)
+{
+    if (!((tempStr[0] >= 'A' && tempStr[0] <= 'Z') || (tempStr[0] >= 'a' && tempStr[0] <= 'z') || tempStr[0] == '_'))
+    {
+        PrintSyntaxError(SYNTAX_ERROR_READ, index + findSymbol);
+        return false;
+    }
+}
+
 bool ParseRead(std::string& str)
 {
+    size_t index = 0;
     DeleteSpace(str);
     if (str.substr(0, READ_TERMINAL.size()) != READ_TERMINAL)
     {
@@ -29,41 +39,67 @@ bool ParseRead(std::string& str)
     }
 
     str.erase(0, READ_TERMINAL.size());
-    size_t findSymbol = str.find(",");
+    index += READ_TERMINAL.size();
 
-    if (findSymbol == std::string::npos)
+    size_t findSymbol = 0;
+    bool firstIdentifier = true;
+
+    while (findSymbol != std::string::npos)
     {
-        PrintSyntaxError(SYNTAX_ERROR_READ, 0);
-        return false;
-    }
+        if (!firstIdentifier)
+        {
+            if (str.substr(0, 1) != ",")
+            {
+                PrintSyntaxError(SYNTAX_ERROR_READ, index + findSymbol);
+                return false;
+            }
+            str.erase(0, 1);
+            index++;
+        }
 
-    std::string tempStr = str.substr(0, findSymbol);
+        findSymbol = str.find(",");
 
-    if (!((tempStr[0] >= 'A' && tempStr[0] <= 'Z') || (tempStr[0] >= 'a' && tempStr[0] <= 'z')))
-    {
-        PrintSyntaxError(SYNTAX_ERROR_READ, 0);
-        return false;
-    }
+        if (findSymbol == std::string::npos)
+        {
+            if (str == ")")
+            {
+                PrintSyntaxError(SYNTAX_ERROR_READ, index + findSymbol);
+                return false;
+            }
 
-    str.erase(0, findSymbol + 1);
-    findSymbol = str.find(")");
+            findSymbol = str.find(")");
 
-    if (findSymbol == std::string::npos)
-    {
-        PrintSyntaxError(SYNTAX_ERROR_READ, 0);
-        return false;
-    }
+            if (findSymbol != std::string::npos && !firstIdentifier)
+            {
+                if (!CheckIdentifier(str.substr(0, findSymbol), index, findSymbol)) // последний идентификатор чекаем
+                {
+                    return false;
+                }
 
-    tempStr = str.substr(0, findSymbol);
+                break;
+            }
+            else
+            {
+                PrintSyntaxError(SYNTAX_ERROR_READ, index + findSymbol);
+                return false;
+            }
+        }
 
-    if (!((tempStr[0] >= 'A' && tempStr[0] <= 'Z') || (tempStr[0] >= 'a' && tempStr[0] <= 'z')))
-    {
-        PrintSyntaxError(SYNTAX_ERROR_READ, 0);
-        return false;
+        std::string tempStr = str.substr(0, findSymbol);
+
+        if (!CheckIdentifier(str.substr(0, findSymbol), index, findSymbol)) 
+        {
+            return false;
+        }
+
+        str.erase(0, findSymbol);
+        index += findSymbol;
+        firstIdentifier = false;
     }
 
     return true;
 }
+
 
 bool ParseWrite(std::string& str)
 {
@@ -106,40 +142,6 @@ bool ParseWrite(std::string& str)
     {
         PrintSyntaxError(SYNTAX_ERROR_WRITE, 0);
         return false;
-    }
-
-    return true;
-}
-
-bool ParseSt(std::string& line)
-{
-    if (line[0] == ASSIGNMENT_TERMINAL[0])
-    {
-        line.erase(line.begin());
-        if (!ParseListStatements(line))
-        {
-            return false;
-        }
-        if (line[0] != '}')
-        {
-            PrintSyntaxError(SYNTAX_ERROR_ASSIGNMENT, 0);
-            return false;
-        }
-        line.erase(line.begin());
-        return true;
-    }
-
-    return false;
-}
-
-bool ParseListStatements(std::string& line)
-{
-    while (!line.empty() && line[0] != '}')
-    {
-        if (!ParseSt(line))
-        {
-            return false;
-        }
     }
 
     return true;
