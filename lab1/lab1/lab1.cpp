@@ -306,6 +306,13 @@ int main()
 		return 1;
 	}
 
-	DCLS(file);
+	try
+	{
+		DCLS(file);
+	}
+	catch (...)
+	{
+		return 1;
+	}
 
 }
