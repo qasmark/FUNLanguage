@@ -6,16 +6,12 @@
 #include <regex>
 #include "ParseUnit.h"
 #include <fstream>
-std::vector<std::string> ParseString(std::string code);
-bool syntaxAnalyzer(const std::vector<std::string>& tokens);
+
 
 int main() 
 {
-    std::ifstream file("input_code.txt");
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    std::string code = buffer.str();
-    std::vector<std::string> tokens = ParseString(code);
+    std::string fileName = "input_code.txt";
+    std::vector<std::string> tokens = ParseString(fileName);
 
 
     std::cout << "Tokens: ";

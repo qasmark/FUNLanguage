@@ -11,7 +11,7 @@ VAR
 	letter : char
 RAV
 BEGIN
-	READ(letter);
+	READ(input, letter);
 	WRITE(a);
 	
 	IF letter = '1' THEN
@@ -25,7 +25,7 @@ BEGIN
 	address := "Avenu 123 St";
 	location := "Himiko";
 	WRITE(address);
-	READ(letter);
+	READ(input, letter);
 	
 	IF letter = '2' THEN
 		b := 16;

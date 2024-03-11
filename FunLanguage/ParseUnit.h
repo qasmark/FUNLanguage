@@ -2,73 +2,90 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <map>
 #include <iostream>
 #include <regex>
 
-std::vector<std::string> ParseString(std::string code) {
-    std::map<std::string, int> varMap;
-    int varCount = 1;
-    std::string delimiters = " \n\t,;:";
-    size_t pos = 0;
-    std::string token;
+std::vector<std::string> ParseString(std::string fileName)
+{
+    std::ifstream fileInput(fileName);
+
     std::vector<std::string> tokens;
-    bool isConstOrVarBlock = false;
-
-    // Удаление лишних пробелов, \n и \t
-    code = std::regex_replace(code, std::regex(" +"), " ");
-    std::replace(code.begin(), code.end(), '\n', ' ');
-    std::replace(code.begin(), code.end(), '\t', ' ');
-
-    while ((pos = code.find_first_of(delimiters)) != std::string::npos) {
-        token = code.substr(0, pos);
-        if (!token.empty()) {
-            if (token == "CONST" || token == "VAR") {
-                isConstOrVarBlock = true;
-            }
-            else if (token == "NOC" || token == "RAV") {
-                isConstOrVarBlock = false;
-            }
-            else if (isConstOrVarBlock) {
-                size_t nextPos = pos;
-                while (code[nextPos] == ' ' && nextPos < code.size()) {
-                    ++nextPos;
-                }
-                if (code[nextPos] == ':' || code[nextPos] == ',') {
-                    varMap[token] = varCount++;
-                }
-            }
-
-            if (varMap.find(token) != varMap.end()) {
-                tokens.push_back("[" + std::to_string(varMap[token]) + "]");
-            }
-            else {
-                tokens.push_back(token);
-            }
-        }
-        if (code[pos] == ':' || code[pos] == ',' || code[pos] == ';') {
-            tokens.push_back(std::string(1, code[pos]));
-        }
-        code.erase(0, pos + 1);
+    std::string str;
+    while (getline(fileInput, str))
+    {
+        std::replace(str.begin(), str.end(), '\t', ' ');
+        std::replace(str.begin(), str.end(), '\n', ' ');
+        str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+        tokens.push_back(str);
     }
-
-    if (!code.empty()) {
-        if (varMap.find(code) != varMap.end()) {
-            tokens.push_back("[" + std::to_string(varMap[code]) + "]");
-        }
-        else {
-            tokens.push_back(code);
-        }
-    }
-
-    //std::cout << "Variable Map:\n";
-    //for (const auto& pair : varMap) {
-    //    std::cout << pair.first << ": " << pair.second << "\n";
-    //}
-    //std::cout << std::endl;
-
     return tokens;
 }
+
+//std::vector<std::string> ParseString(std::string code) {
+//    std::map<std::string, int> varMap;
+//    int varCount = 1;
+//    std::string delimiters = " \n\t,;:";
+//    size_t pos = 0;
+//    std::string token;
+//    std::vector<std::string> tokens;
+//    bool isConstOrVarBlock = false;
+//
+//    // Удаление лишних пробелов, \n и \t
+//    code = std::regex_replace(code, std::regex(" +"), " ");
+//    std::replace(code.begin(), code.end(), '\n', ' ');
+//    std::replace(code.begin(), code.end(), '\t', ' ');
+//
+//    while ((pos = code.find_first_of(delimiters)) != std::string::npos) {
+//        token = code.substr(0, pos);
+//        if (!token.empty()) {
+//            if (token == "CONST" || token == "VAR") {
+//                isConstOrVarBlock = true;
+//            }
+//            else if (token == "NOC" || token == "RAV") {
+//                isConstOrVarBlock = false;
+//            }
+//            else if (isConstOrVarBlock) {
+//                size_t nextPos = pos;
+//                while (code[nextPos] == ' ' && nextPos < code.size()) {
+//                    ++nextPos;
+//                }
+//                if (code[nextPos] == ':' || code[nextPos] == ',') {
+//                    varMap[token] = varCount++;
+//                }
+//            }
+//
+//            if (varMap.find(token) != varMap.end()) {
+//                tokens.push_back("[" + std::to_string(varMap[token]) + "]");
+//            }
+//            else {
+//                tokens.push_back(token);
+//            }
+//        }
+//        if (code[pos] == ':' || code[pos] == ',' || code[pos] == ';') {
+//            tokens.push_back(std::string(1, code[pos]));
+//        }
+//        code.erase(0, pos + 1);
+//    }
+//
+//    if (!code.empty()) {
+//        if (varMap.find(code) != varMap.end()) {
+//            tokens.push_back("[" + std::to_string(varMap[code]) + "]");
+//        }
+//        else {
+//            tokens.push_back(code);
+//        }
+//    }
+//
+//    //std::cout << "Variable Map:\n";
+//    //for (const auto& pair : varMap) {
+//    //    std::cout << pair.first << ": " << pair.second << "\n";
+//    //}
+//    //std::cout << std::endl;
+//
+//    return tokens;
+//}
 
 bool syntaxAnalyzer(const std::vector<std::string>& tokens) {
     std::vector<std::string> controlKeywords = { "FUN", "MAIN", "CONST", "NOC", "VAR", "RAV", "BEGIN", "END", "IF", "THEN", "ELSE", "ENDIF", "FOR", "TO", "DO", "ENDFOR" };

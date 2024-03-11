@@ -51,13 +51,3 @@ bool ParseFor(std::string& str)
 {
     return true;
 }
-
-bool ParseRead(std::string& str)
-{
-    return true;
-}
-
-bool ParseWrite(std::string& str)
-{
-    return true;
-}
