@@ -16,9 +16,10 @@ void PrintSyntaxError(const std::string& errorMessage, size_t position)
     std::cout << errorMessage << position << std::endl;
 }
 
-void DeleteSpace(std::string& str)
+void DeleteSpaceAndSemicolon(std::string& str)
 {
     str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+    str.erase(std::remove(str.begin(), str.end(), ';'), str.end());
 }
 
 bool CheckIdentifier(const std::string& tempStr, size_t index, size_t findSymbol)
@@ -32,7 +33,7 @@ bool CheckIdentifier(const std::string& tempStr, size_t index, size_t findSymbol
 bool ParseRead(std::string& str)
 {
     size_t index = 0;
-    DeleteSpace(str);
+    DeleteSpaceAndSemicolon(str);
     if (str.substr(0, READ_TERMINAL.size()) != READ_TERMINAL)
     {
         PrintSyntaxError(SYNTAX_ERROR_READ, 0);
@@ -109,7 +110,7 @@ bool ParseRead(std::string& str)
 bool ParseWrite(std::string& str)
 {
     size_t index = 0;
-    DeleteSpace(str);
+    DeleteSpaceAndSemicolon(str);
     if (str.substr(0, WRITE_TERMINAL.size()) != WRITE_TERMINAL)
     {
         PrintSyntaxError(SYNTAX_ERROR_WRITE, 0);

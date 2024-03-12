@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы заголовков\FOR">
+      <UniqueIdentifier>{a85d4e19-cd96-4f80-931d-52251d03f398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\ListStmnts">
+      <UniqueIdentifier>{040ac614-b828-4bc3-86a4-384b7dff1a31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\ReadAndWrite">
+      <UniqueIdentifier>{40beadcc-f250-4a9c-89da-77f782905259}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Expr">
+      <UniqueIdentifier>{3dc3149e-977a-4e98-8dfb-0cb19d58c413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Dcls">
+      <UniqueIdentifier>{9cdcf13e-495a-4459-8a38-2454563a61f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\WhilePart">
+      <UniqueIdentifier>{f4ccd517-f841-4bb4-8a2c-47bd7071806b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -23,8 +41,23 @@
     <ClInclude Include="ParseUnit.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ForParser.h">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="ForParser\ForParser.h">
+      <Filter>Файлы заголовков\FOR</Filter>
+    </ClInclude>
+    <ClInclude Include="LIstSmnts\ListmntsParser.h">
+      <Filter>Файлы заголовков\ListStmnts</Filter>
+    </ClInclude>
+    <ClInclude Include="ListAndWriteStmnts\ListAndWriteStmts.h">
+      <Filter>Файлы заголовков\ReadAndWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="Expr\ExprSpusk.h">
+      <Filter>Файлы заголовков\Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="Dcls\Dcls.h">
+      <Filter>Файлы заголовков\Dcls</Filter>
+    </ClInclude>
+    <ClInclude Include="whilePart\while.h">
+      <Filter>Файлы заголовков\WhilePart</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

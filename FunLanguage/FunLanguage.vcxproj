@@ -131,8 +131,13 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ForParser.h" />
+    <ClInclude Include="Dcls\Dcls.h" />
+    <ClInclude Include="Expr\ExprSpusk.h" />
+    <ClInclude Include="ForParser\ForParser.h" />
+    <ClInclude Include="ListAndWriteStmnts\ListAndWriteStmts.h" />
+    <ClInclude Include="LIstSmnts\ListmntsParser.h" />
     <ClInclude Include="ParseUnit.h" />
+    <ClInclude Include="whilePart\while.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input_code.txt" />

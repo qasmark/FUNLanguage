@@ -6,6 +6,8 @@
 #include <map>
 #include <iostream>
 #include <regex>
+#include "ListAndWriteStmnts/ListAndWriteStmts.h"
+#include "ForParser/ForParser.h"
 
 std::vector<std::string> ParseString(std::string fileName)
 {
@@ -17,7 +19,6 @@ std::vector<std::string> ParseString(std::string fileName)
     {
         std::replace(str.begin(), str.end(), '\t', ' ');
         std::replace(str.begin(), str.end(), '\n', ' ');
-        str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
         tokens.push_back(str);
     }
     return tokens;
@@ -96,13 +97,13 @@ bool syntaxAnalyzer(const std::vector<std::string>& tokens) {
     std::vector<std::string> stack;
 
     for (size_t i = 0; i < tokens.size(); ++i) {
-        const auto& token = tokens[i];
+        auto token = tokens[i];
         if (std::find(controlKeywords.begin(), controlKeywords.end(), token) != controlKeywords.end()) {
-            if (token == "IF") {
+            if (token.find("IF") != std::string::npos) {
                 ifCount++;
                 stack.push_back("IF");
             }
-            else if (token == "ELSE") {
+            else if (token.find("ELSE") != std::string::npos) {
                 if (!stack.empty() && stack.back() == "IF") {
                     stack.pop_back();
                     stack.push_back("ELSE");
@@ -112,15 +113,19 @@ bool syntaxAnalyzer(const std::vector<std::string>& tokens) {
                     return false;
                 }
             }
-            else if (token == "THEN" && stack.back() != "IF")
+            else if (token.find("THEN") != std::string::npos && stack.back() != "IF")
             {
                 std::cerr << "Error: THEN without IF\n";
             }
-            else if (token == "FOR") {
+            else if (token.find("FOR") != std::string::npos) {
+                if (!ParseFOR(token))
+                {
+                    return false;
+                }
                 forCount++;
                 stack.push_back("FOR");
             }
-            else if (token == "ENDIF") {
+            else if (token.find("ENDIF") != std::string::npos) {
                 if (!stack.empty() && (stack.back() == "IF" || stack.back() == "ELSE")) {
                     stack.pop_back();
                 }
@@ -129,7 +134,7 @@ bool syntaxAnalyzer(const std::vector<std::string>& tokens) {
                     return false;
                 }
             }
-            else if (token == "ENDFOR") {
+            else if (token.find("ENDFOR") != std::string::npos) {
                 if (!stack.empty() && stack.back() == "FOR") {
                     stack.pop_back();
                 }
@@ -141,21 +146,15 @@ bool syntaxAnalyzer(const std::vector<std::string>& tokens) {
         }
         else if (std::find(controlOperators.begin(), controlOperators.end(), token) != controlOperators.end()) {
         }
-        else if (token == "READ") {
-            if (i + 2 < tokens.size() && tokens[i + 1] == "(" && tokens[i + 3] == ")") {
-                i += 3;
-            }
-            else {
-                std::cerr << "Error: Invalid READ syntax\n";
+        else if (token.find("READ") != std::string::npos) {
+            if (!ParseRead(token))
+            {
                 return false;
             }
         }
-        else if (token == "WRITE") {
-            if (i + 2 < tokens.size() && tokens[i + 1] == "(" && tokens[i + 3] == ")") {
-                i += 3;
-            }
-            else {
-                std::cerr << "Error: Invalid WRITE syntax\n";
+        else if (token.find("WRITE") != std::string::npos) {
+            if (!ParseWrite(token))
+            {
                 return false;
             }
         }
