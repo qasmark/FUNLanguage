@@ -21,75 +21,73 @@ void deleteSpaces(const std::string& text , int& i)
 	}
 }
 
-void expect(const std::string& expected , const std::string& text , int& i)
+bool expect(const std::string& expected , const std::string& text , int& i)
 {
 	if (text.substr(i , expected.length()) == expected)
 	{
 		i += expected.length();
+		return true;
 	}
-	else
-	{
-		//std::cout << "Syntax error: expected '" + expected + "'" << " but " << text.substr(i , expected.length()) << std::endl;
-		throw std::runtime_error("Syntax error: expected '" + expected + "'");
-	}
+	return false;
 }
 
-std::string parseIdentifier(const std::string& text , int& i)
+bool parseIdentifier(const std::string& text , int& i)
 {
 	std::string identifier;
 	while (isalpha(text[i]))
 	{
 		identifier += text[i++];
 	}
-	//std::cout << identifier << std::endl;
-	return identifier;
+	return true;
 }
 
-std::string parseType(const std::string& text , int& i)
+bool parseValue(const std::string& text , int& i , const std::string& type);
+bool parseType(const std::string& text , int& i)
 {
 	std::string type;
 	while (isalpha(text[i]))
 	{
 		type += text[i++];
 	}
-	if (type == INT || type == CHAR || type == STRING || type == DOUBLE || type == FLOAT || type == BOOL)
+	deleteSpaces(text , i);
+	if (!expect("=" , text , i))
 	{
-		return type;
+		return false;
 	}
-	//std::cout << "Syntax error: expected type" << std::endl;
-	throw std::runtime_error("Syntax error: expected type");
+	deleteSpaces(text , i);
+	return parseValue(text , i , type);
 }
 
-std::string parseInt(const std::string& text , int& i)
+bool parseInt(const std::string& text , int& i)
 {
 	std::string value;
 	while (isdigit(text[i]))
 	{
 		value += text[i++];
 	}
-	return value;
+	return true;
 }
 
-std::string parseDouble(const std::string& text , int& i)
+bool parseDouble(const std::string& text , int& i)
 {
 	std::string value;
 	while (isdigit(text[i]) || text[i] == '.')
 	{
 		if (text[i] == '.')
 		{
-			return value + "." + parseInt(text , ++i);
+			return parseInt(text , ++i);
 		}
 		value += text[i++];
 	}
-	return value;
+	return true;
 }
 
-std::string parseFloat(const std::string& text , int& i)
+bool parseFloat(const std::string& text , int& i)
 {
 	return parseDouble(text , i);
 }
 
-std::string parseString(const std::string& text , int& i)
+bool parseString(const std::string& text , int& i)
 {
 	std::string value;
 	bool isClose = false;
@@ -104,34 +102,34 @@ std::string parseString(const std::string& text , int& i)
 			else
 			{
 				value += text[i++];
-				return value;
+				return true;
 			}
 		}
 		value += text[i++];
 	}
-	return value;
+	return true;
 }
 
-std::string parseBool(const std::string& text , int& i)
+bool parseBool(const std::string& text , int& i)
 {
 	if (text[i] == 't' && text[i + 1] == 'r' && text[i + 2] == 'r' && text[i + 3] == 'u' && text[i + 4] == 'e')
 	{
 		i += 4;
-		return "true";
+		return true;
 	}
 	if (text[i] == 'f' && text[i + 1] == 'a' && text[i + 2] == 'l' && text[i + 3] == 's' && text[i + 4] == 'e')
 	{
 		i += 4;
-		return "false";
+		return true;
 	}
-	throw std::runtime_error("Syntax error: expected bool type");
+	return false;
 }
 
-std::string parseChar(const std::string& text , int& i)
+bool parseChar(const std::string& text , int& i)
 {
 	if (text[i] != '\'')
 	{
-		throw std::runtime_error("Syntax error: expected char type");
+		return false;
 	}
 
 	i++;
@@ -139,13 +137,16 @@ std::string parseChar(const std::string& text , int& i)
 	{
 		i++;
 	}
+
 	if (text[i] != '\'')
 	{
-		throw std::runtime_error("Syntax error: expected char type");
+		return false;
 	}
+
+	return true;
 }
 
-std::string parseValue(const std::string& text , int& i , const std::string& type)
+bool parseValue(const std::string& text , int& i , const std::string& type)
 {
 	if (type == INT)
 	{
@@ -171,6 +172,7 @@ std::string parseValue(const std::string& text , int& i , const std::string& typ
 	{
 		return parseChar(text , i);
 	}
+	return false;
 }
 
 bool parseNoc(const std::string& text , int& i)
@@ -194,19 +196,22 @@ void parseConstants(const std::string& text , int& i)
 		{
 			break;
 		}
-		parseIdentifier(text , i);
+		if (!parseIdentifier(text , i))
+		{
+			return;
+		}
 
 		deleteSpaces(text , i);
-		expect(":" , text , i);
+		if (!expect(":" , text , i))
+		{
+			return;
+		}
 
 		deleteSpaces(text , i);
-		const std::string type = parseType(text , i);
-
-		deleteSpaces(text , i);
-		expect("=" , text , i);
-
-		deleteSpaces(text , i);
-		parseValue(text , i , type);
+		if (!parseType(text , i))
+		{
+			return;
+		}
 
 		deleteSpaces(text , i);
 		if (text[i] == ';')
@@ -222,15 +227,14 @@ void parseConstants(const std::string& text , int& i)
 	}
 }
 
-std::string parseIdentifierList(const std::string& text , int& i)
+bool parseIdentifierList(const std::string& text , int& i)
 {
 	std::string identifier;
 	while (isalpha(text[i]) || text[i] == ',' || text[i] == ' ')
 	{
 		identifier += text[i++];
 	}
-	//std::cout << identifier << std::endl;
-	return identifier;
+	return true;
 }
 
 bool parseRav(const std::string& text , int& i)
@@ -247,7 +251,10 @@ bool parseRav(const std::string& text , int& i)
 void parseVar(const std::string& text , int& i)
 {
 	deleteSpaces(text , i);
-	expect("VAR" , text , i);
+	if (!expect("VAR" , text , i))
+	{
+		return;
+	}
 	while (true)
 	{
 		deleteSpaces(text , i);
@@ -255,13 +262,20 @@ void parseVar(const std::string& text , int& i)
 		{
 			break;
 		}
-		parseIdentifierList(text , i);
-
+		if (!parseIdentifierList(text , i))
+		{
+			return;
+		}
 		deleteSpaces(text , i);
-		expect(":" , text , i);
-
+		if (!expect(":" , text , i))
+		{
+			return;
+		}
 		deleteSpaces(text , i);
-		const std::string type = parseType(text , i);
+		if (!parseType(text , i))
+		{
+			return;
+		}
 
 		deleteSpaces(text , i);
 		if (text[i] == ';')
@@ -306,13 +320,6 @@ int main()
 		return 1;
 	}
 
-	try
-	{
-		DCLS(file);
-	}
-	catch (...)
-	{
-		return 1;
-	}
+	DCLS(file);
 
 }
