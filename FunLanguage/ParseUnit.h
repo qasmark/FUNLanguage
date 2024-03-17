@@ -92,7 +92,7 @@ std::vector<std::string> ParseString(std::string fileName)
 //}
 
 bool syntaxAnalyzer(const std::vector<std::string>& tokens) {
-    std::vector<std::string> controlKeywords = { "FUN", "MAIN", "CONST", "NOC", "VAR", "RAV", "BEGIN", "END", "IF", "THEN", "ELSE", "ENDIF", "FOR", "TO", "DO", "ENDFOR" };
+    std::vector<std::string> controlKeywords = { "FUN", "MAIN", "CONST", "NOC", "VAR", "RAV", "BEGIN", "END", "IF", "THEN", "ELSE", "ENDIF", "FOR", "TO", "DO", "ENDFOR", "WRITE", "READ", "WHILE"};
     std::vector<std::string> controlOperators = { "=", "+", "-", "*", "/", ":=" };
 
     int ifCount = 0;
@@ -101,7 +101,72 @@ bool syntaxAnalyzer(const std::vector<std::string>& tokens) {
 
     for (size_t i = 0; i < tokens.size(); ++i) {
         auto token = tokens[i];
-        if (std::find(controlKeywords.begin(), controlKeywords.end(), token) != controlKeywords.end()) {
+
+       
+        bool findControleKeyWord = false;
+        for (auto& word : controlKeywords)
+        {
+            if (token.find(word) != std::string::npos )
+            {
+                if (word == "FOR")
+                {
+                    std::string forStr = "";
+                    bool findEndFor = false;
+                    for (size_t l = i; l < tokens.size(); l++)
+                    {
+                        if (tokens[l].find("ENDFOR") != std::string::npos) 
+                        {
+                            findEndFor = true;
+                            for (size_t k = i; k < l; k++)
+                            {
+                                forStr += tokens[k];
+                            }
+                            break;
+                        }
+                    }
+                    if (!findEndFor)
+                    {
+                        std::cout << "Not found ENDFOR" << std::endl;
+                        return false;
+                    }
+                    if (!ParseFor(forStr))
+                    {
+                        return false;
+                    }
+                }
+
+                if (word == "READ")
+                {
+                    if (!ParseRead(token))
+                    {
+                        return false;
+                    }
+                }
+
+                if (word == "WRITE")
+                {
+                    if (!ParseWrite(token))
+                    {
+                        return false;
+                    }
+                }
+
+                if (word == "IF")
+                {
+                    if (!ParseIf(token))
+                    {
+                        return false;
+                    }
+                }
+
+                findControleKeyWord = true;
+                break;
+            }
+
+
+        }
+
+       /* if (std::find(controlKeywords.begin(), controlKeywords.end(), token) != controlKeywords.end()) {
             if (token.find("IF") != std::string::npos) {
                 ifCount++;
                 stack.push_back("IF");
@@ -160,7 +225,7 @@ bool syntaxAnalyzer(const std::vector<std::string>& tokens) {
             {
                 return false;
             }
-        }
+        }*/
     }
 
     if (!stack.empty()) {

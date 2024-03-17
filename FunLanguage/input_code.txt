@@ -14,7 +14,7 @@ BEGIN
 	READ(input, letter);
 	WRITE(a);
 	
-	IF letter = '1' THEN
+	IF(letter = '1') THEN
 		b := 15;
 		c := -11 + b;
 	ELSE
@@ -27,11 +27,11 @@ BEGIN
 	WRITE(address);
 	READ(input, letter);
 	
-	IF letter = '2' THEN
+	IF (letter = '2') THEN
 		b := 16;
 		c := -12 + b;
 	ELSE 
-		IF letter = '3' THEN
+		(IF letter = '3') THEN
 			b := 22;
 			c := 11 + b;
 		ENDIF

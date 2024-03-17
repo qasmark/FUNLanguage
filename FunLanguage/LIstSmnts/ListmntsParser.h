@@ -21,23 +21,23 @@ void LogError(std::string errorTerminal, int line)
 
 bool ParseAssigment(std::string& str)
 {
-    int null = 0;
-    if (!ParseIdentifier(str, null))
+    int index = 0;
+    if (!ParseIdentifier(str, index))
     {
         return false;
     }
 
-    if (str.substr(0, ASSIGNMENT_TERMINAL.length()) != ASSIGNMENT_TERMINAL)
+    if (str.substr(index, ASSIGNMENT_TERMINAL.length()) != ASSIGNMENT_TERMINAL)
     {
         LogError(ASSIGNMENT_TERMINAL, 0);
         return false;
     }
-    str.erase(0, ASSIGNMENT_TERMINAL.length());
-
-    if (!RuleExpr(str))
-    {
-        return false;
-    }
+    index += ASSIGNMENT_TERMINAL.length();
+    std::string ruleString = str.substr(index);
+    //if (!RuleExpr(ruleString))
+    //{
+    //    return false;
+    //}
 
     return true;
 }
@@ -103,6 +103,7 @@ bool ParseEmpty(std::string& str)
 
 bool ParseIf(std::string& str)
 {
+    DeleteSpaces(str);
     if (str.substr(0, IF_TERMINAL.length()) != IF_TERMINAL)
     {
         LogError(IF_TERMINAL, 0);
@@ -178,12 +179,12 @@ bool IsListstmnts(std::string str)
 
 bool ParseSt(std::string& str)
 {
-    if (!ParseAssigment(str) || !ParseIf(str) || !ParseWhile(str) || !ParseFor(str) ||
-        !ParseRead(str) || !ParseWrite(str) || !ParseEmpty(str) || !IsListstmnts(str))
+    if (ParseAssigment(str) || ParseIf(str) || ParseWhile(str) || ParseFor(str) ||
+        ParseRead(str) || ParseWrite(str) || ParseEmpty(str) || IsListstmnts(str))
     {
-        LogError(ST_NAME, 0);
-        return false;
+        return true;
     }
 
+    LogError(ST_NAME, 0);
     return true;
 }
