@@ -16,7 +16,7 @@ bool Expect(const std::string& expected, const std::string& text, int& i)
 {
 	if (text.substr(i, expected.length()) == expected)
 	{
-		i += expected.length();
+		i += int(expected.length());
 		return true;
 	}
 	return false;
@@ -78,7 +78,7 @@ bool ParseFloat(const std::string& text, int& i)
 	return ParseDouble(text, i);
 }
 
-bool ParseString(const std::string& text, int& i)
+bool ParseStr(const std::string& text, int& i)
 {
 	std::string value;
 	bool isClose = false;
@@ -153,7 +153,7 @@ bool ParseValue(const std::string& text, int& i, const std::string& type)
 	}
 	if (type == STRING)
 	{
-		return ParseString(text, i);
+		return ParseStr(text, i);
 	}
 	if (type == BOOL)
 	{

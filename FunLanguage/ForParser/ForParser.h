@@ -1,12 +1,9 @@
 #pragma once
-#include <iostream>
-#include <sstream>
 #include "../include.h"
 
 #include "Dcls/Dcls.h"
 #include "Expr/ExprSpusk.h"
 #include "LIstSmnts/ListmntsParser.h"
-
 
 bool ParseFor(std::string& str)
 {

@@ -26,6 +26,7 @@ bool CheckIdentifier(const std::string& tempStr, size_t index, size_t findSymbol
     {
         return false;
     }
+    return true;
 }
 
 bool ParseRead(std::string& str)

@@ -1,12 +1,8 @@
 #pragma once
-#include "iostream"
 #include <vector>
 #include "../include.h"
 
-const std::string WHILE_START_TERMINAL = "WHILE";
-const std::string DO_TERMINAL = "DO";
-const std::string WHILE_END_TERMINAL = "ENDWHILE";
-
+bool ParseSt(std::string& str);
 
 bool ParseWhile(std::string& str)
 {

@@ -20,7 +20,7 @@ bool Error(const std::string& message) {
     return false;
 }
 
-std::vector<std::string> ParseString(std::string code) {
+std::vector<std::string> ParseStringExprSpusk(std::string code) {
     std::string delimiters = " ,;:()";
     size_t pos = 0;
     std::string token;
@@ -85,7 +85,7 @@ bool RuleExpr(std::string& input);
 bool RuleExpr(std::string& input) {
     std::size_t pos = 0;
 
-    std::vector<std::string> tokens = ParseString(input);
+    std::vector<std::string> tokens = ParseStringExprSpusk(input);
 
     if (RuleSimpleExpr(tokens, pos) && pos == tokens.size()) {
         return RuleExprPrime(tokens, pos);

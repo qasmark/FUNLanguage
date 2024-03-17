@@ -5,11 +5,14 @@
 #include <vector>
 #include <algorithm>
 #include "../include.h"
-
-
-
+#include "../ForParser/ForParser.h"
+#include "../whilePart/while.h"
 
 bool ParseSt(std::string& str);
+bool ParseFor(std::string& str);
+bool ParseRead(std::string& str);
+bool ParseWrite(std::string& str);
+
 
 void LogError(std::string errorTerminal, int line)
 {
@@ -61,30 +64,30 @@ bool ParseListstmnts(std::string& str)
     return true;
 }
 
-bool ParseAssigment(std::string& str)
-{
-    int null = 0;
-    if (!ParseIdentifier(str, null))
-    {
-        return false;
-    }
-
-    null = 0;
-
-    if (str.substr(0, ASSIGNMENT_TERMINAL.length()) != ASSIGNMENT_TERMINAL)
-    {
-        LogError(ASSIGNMENT_TERMINAL, 0);
-        return false;
-    }
-    str.erase(0, ASSIGNMENT_TERMINAL.length());
-
-    if (!RuleExpr(str))
-    {
-        return false;
-    }
-
-    return true;
-}
+//bool ParseAssigment(std::string& str)
+//{
+//    int null = 0;
+//    if (!ParseIdentifier(str, null))
+//    {
+//        return false;
+//    }
+//
+//    null = 0;
+//
+//    if (str.substr(0, ASSIGNMENT_TERMINAL.length()) != ASSIGNMENT_TERMINAL)
+//    {
+//        LogError(ASSIGNMENT_TERMINAL, 0);
+//        return false;
+//    }
+//    str.erase(0, ASSIGNMENT_TERMINAL.length());
+//
+//    if (!RuleExpr(str))
+//    {
+//        return false;
+//    }
+//
+//    return true;
+//}
 
 bool ParseEmpty(std::string& str)
 {
@@ -159,7 +162,7 @@ bool IsListstmnts(std::string str)
     }
     str.erase(0, BEGIN_LISTSTMNTS_TERMINAL.length());
 
-    if (!ParseListstmnts)
+    if (!ParseListstmnts(str))
     {
         return false;
     }
@@ -184,4 +187,3 @@ bool ParseSt(std::string& str)
 
     return true;
 }
-
