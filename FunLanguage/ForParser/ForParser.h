@@ -1,23 +1,17 @@
 #pragma once
 #include <iostream>
 #include <sstream>
-#include "../Dcls/Dcls.h"
-#include "../Expr/ExprSpusk.h"
-#include "../LIstSmnts/ListmntsParser.h"
+#include "../include.h"
 
-const std::string FOR_TERMINAL = "FOR";
-const std::string ASSIGNMENT_TERMINAL = ":=";
-const std::string TO_TERMINAL = "TO";
-const std::string DO_TERMINAL = "DO";
+#include "Dcls/Dcls.h"
+#include "Expr/ExprSpusk.h"
+#include "LIstSmnts/ListmntsParser.h"
 
-void DeleteSpaces(std::string& line)
+
+bool ParseFor(std::string& str)
 {
-	line.erase(remove(line.begin(), line.end(), ' '), line.end());
-}
-
-bool ParseFOR(std::string& str)
-{
-	size_t index = 0, zero = 0;
+	size_t index = 0;
+	int zero = 0;
 	std::string tempStr;
 	DeleteSpaces(str);
 
@@ -59,7 +53,7 @@ bool ParseFOR(std::string& str)
 		return false;
 	}
 	tempStr = str.substr(index, positionAssigment - index);
-	if (!RuleSimpleExpr(tempStr, zero)) // потом должны передлать чтобы принимало строку
+	if (!RuleExpr(tempStr)) // потом должны передлать чтобы принимало строку
 	{
 		std::cout << "Syntax error: expected \'simple expression\', line: pos:" << std::endl; // from lexer
 		return false;
@@ -83,7 +77,7 @@ bool ParseFOR(std::string& str)
 	}
 
 	tempStr = str.substr(index, positionAssigment - index);
-	if (!RuleSimpleExpr(tempStr, zero))
+	if (!RuleExpr(tempStr))
 	{
 		std::cout << "Syntax error: expected \'simple expression\', line: pos:" << std::endl; // from lexer
 		return false;

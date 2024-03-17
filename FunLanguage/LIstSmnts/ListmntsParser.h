@@ -4,27 +4,12 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include "../ListAndWriteStmnts/ListAndWriteStmts.h"
-#include "../Dcls/Dcls.h"
-#include "../Expr/ExprSpusk.h"
+#include "../include.h"
 
-const std::string EMPTY_TERMINAL = ";";
-const std::string IF_TERMINAL = "IF(";
-const std::string THEN_TERMINAL = ")THEN";
-const std::string ELSE_TERMINAL = "ELSE";
-const std::string END_IF_TERMINAL = "FI";
-const std::string ASSIGMENT_TERMINAL = ":=";
-const std::string BEGIN_LISTSTMNTS_TERMINAL = "{";
-const std::string END_LISTSTMNTS_TERMINAL = "}";
-const std::string END_PROGRAM_TERMINAL = "NUM";
 
-const std::string ST_NAME = "statements";
-const std::string LISTSTMNTS_NAME = "list statements";
 
-void DeleteSpaces(std::string& line)
-{
-    line.erase(remove(line.begin(), line.end(), ' '), line.end());
-}
+
+bool ParseSt(std::string& str);
 
 void LogError(std::string errorTerminal, int line)
 {
@@ -33,17 +18,18 @@ void LogError(std::string errorTerminal, int line)
 
 bool ParseAssigment(std::string& str)
 {
-    if (!ParseIdentifier(str))
+    int null = 0;
+    if (!ParseIdentifier(str, null))
     {
         return false;
     }
 
-    if (str.substr(0, ASSIGMENT_TERMINAL.length()) != ASSIGMENT_TERMINAL)
+    if (str.substr(0, ASSIGNMENT_TERMINAL.length()) != ASSIGNMENT_TERMINAL)
     {
-        LogError(ASSIGMENT_TERMINAL, 0);
+        LogError(ASSIGNMENT_TERMINAL, 0);
         return false;
     }
-    str.erase(0, ASSIGMENT_TERMINAL.length());
+    str.erase(0, ASSIGNMENT_TERMINAL.length());
 
     if (!RuleExpr(str))
     {
@@ -77,19 +63,22 @@ bool ParseListstmnts(std::string& str)
 
 bool ParseAssigment(std::string& str)
 {
-    if (!ParseIdent(str))
+    int null = 0;
+    if (!ParseIdentifier(str, null))
     {
         return false;
     }
 
-    if (str.substr(0, ASSIGMENT_TERMINAL.length()) != ASSIGMENT_TERMINAL)
+    null = 0;
+
+    if (str.substr(0, ASSIGNMENT_TERMINAL.length()) != ASSIGNMENT_TERMINAL)
     {
-        LogError(ASSIGMENT_TERMINAL, 0);
+        LogError(ASSIGNMENT_TERMINAL, 0);
         return false;
     }
-    str.erase(0, ASSIGMENT_TERMINAL.length());
+    str.erase(0, ASSIGNMENT_TERMINAL.length());
 
-    if (!ParseExpr(str))
+    if (!RuleExpr(str))
     {
         return false;
     }
@@ -118,7 +107,7 @@ bool ParseIf(std::string& str)
     }
     str.erase(0, IF_TERMINAL.length());
 
-    if (!ParseExpr(str))
+    if (!RuleExpr(str))
     {
         return false;
     }

@@ -2,16 +2,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-
-const std::string INT = "int";
-const std::string STRING = "string";
-const std::string DOUBLE = "double";
-const std::string CHAR = "char";
-const std::string BOOL = "bool";
-const std::string FLOAT = "float";
-
-const std::string CONST = "const";
-const std::string VAR = "var";
+#include "../include.h"
 
 void DeleteSpaces(const std::string& text, int& i)
 {
@@ -21,75 +12,73 @@ void DeleteSpaces(const std::string& text, int& i)
 	}
 }
 
-void Expect(const std::string& expected, const std::string& text, int& i)
+bool Expect(const std::string& expected, const std::string& text, int& i)
 {
 	if (text.substr(i, expected.length()) == expected)
 	{
 		i += expected.length();
+		return true;
 	}
-	else
-	{
-		std::cout << "Syntax error: expected '" + expected + "'" << " but " << text.substr(i, expected.length()) << std::endl;
-		throw std::runtime_error("Syntax error: expected '" + expected + "'");
-	}
+	return false;
 }
 
-std::string ParseIdentifier(const std::string& text, int& i)
+bool ParseIdentifier(const std::string& text, int& i)
 {
 	std::string identifier;
 	while (isalpha(text[i]))
 	{
 		identifier += text[i++];
 	}
-	std::cout << identifier << std::endl;
-	return identifier;
+	return true;
 }
 
-std::string ParseType(const std::string& text, int& i)
+bool ParseValue(const std::string& text, int& i, const std::string& type);
+bool ParseType(const std::string& text, int& i)
 {
 	std::string type;
 	while (isalpha(text[i]))
 	{
 		type += text[i++];
 	}
-	if (type == INT || type == CHAR || type == STRING || type == DOUBLE || type == FLOAT || type == BOOL)
+	DeleteSpaces(text, i);
+	if (!Expect("=", text, i))
 	{
-		return type;
+		return false;
 	}
-	std::cout << "Syntax error: expected type" << std::endl;
-	throw std::runtime_error("Syntax error: expected type");
+	DeleteSpaces(text, i);
+	return ParseValue(text, i, type);
 }
 
-std::string ParseInt(const std::string& text, int& i)
+bool ParseInt(const std::string& text, int& i)
 {
 	std::string value;
 	while (isdigit(text[i]))
 	{
 		value += text[i++];
 	}
-	return value;
+	return true;
 }
 
-std::string ParseDouble(const std::string& text, int& i)
+bool ParseDouble(const std::string& text, int& i)
 {
 	std::string value;
 	while (isdigit(text[i]) || text[i] == '.')
 	{
 		if (text[i] == '.')
 		{
-			return value + "." + ParseInt(text, ++i);
+			return ParseInt(text, ++i);
 		}
 		value += text[i++];
 	}
-	return value;
+	return true;
 }
 
-std::string ParseFloat(const std::string& text, int& i)
+bool ParseFloat(const std::string& text, int& i)
 {
 	return ParseDouble(text, i);
 }
 
-std::string ParseString(const std::string& text, int& i)
+bool ParseString(const std::string& text, int& i)
 {
 	std::string value;
 	bool isClose = false;
@@ -104,34 +93,34 @@ std::string ParseString(const std::string& text, int& i)
 			else
 			{
 				value += text[i++];
-				return value;
+				return true;
 			}
 		}
 		value += text[i++];
 	}
-	return value;
+	return true;
 }
 
-std::string ParseBool(const std::string& text, int& i)
+bool ParseBool(const std::string& text, int& i)
 {
 	if (text[i] == 't' && text[i + 1] == 'r' && text[i + 2] == 'r' && text[i + 3] == 'u' && text[i + 4] == 'e')
 	{
 		i += 4;
-		return "true";
+		return true;
 	}
 	if (text[i] == 'f' && text[i + 1] == 'a' && text[i + 2] == 'l' && text[i + 3] == 's' && text[i + 4] == 'e')
 	{
 		i += 4;
-		return "false";
+		return true;
 	}
-	throw std::runtime_error("Syntax error: expected bool type");
+	return false;
 }
 
-std::string ParseChar(const std::string& text, int& i)
+bool ParseChar(const std::string& text, int& i)
 {
 	if (text[i] != '\'')
 	{
-		throw std::runtime_error("Syntax error: expected char type");
+		return false;
 	}
 
 	i++;
@@ -139,13 +128,16 @@ std::string ParseChar(const std::string& text, int& i)
 	{
 		i++;
 	}
+
 	if (text[i] != '\'')
 	{
-		throw std::runtime_error("Syntax error: expected char type");
+		return false;
 	}
+
+	return true;
 }
 
-std::string ParseValue(const std::string& text, int& i, const std::string& type)
+bool ParseValue(const std::string& text, int& i, const std::string& type)
 {
 	if (type == INT)
 	{
@@ -171,6 +163,7 @@ std::string ParseValue(const std::string& text, int& i, const std::string& type)
 	{
 		return ParseChar(text, i);
 	}
+	return false;
 }
 
 bool ParseNoc(const std::string& text, int& i)
@@ -194,19 +187,22 @@ void ParseConstants(const std::string& text, int& i)
 		{
 			break;
 		}
-		ParseIdentifier(text, i);
+		if (!ParseIdentifier(text, i))
+		{
+			return;
+		}
 
 		DeleteSpaces(text, i);
-		Expect(":", text, i);
+		if (!Expect(":", text, i))
+		{
+			return;
+		}
 
 		DeleteSpaces(text, i);
-		const std::string type = ParseType(text, i);
-
-		DeleteSpaces(text, i);
-		Expect("=", text, i);
-
-		DeleteSpaces(text, i);
-		ParseValue(text, i, type);
+		if (!ParseType(text, i))
+		{
+			return;
+		}
 
 		DeleteSpaces(text, i);
 		if (text[i] == ';')
@@ -222,15 +218,14 @@ void ParseConstants(const std::string& text, int& i)
 	}
 }
 
-std::string ParseIdentifierList(const std::string& text, int& i)
+bool ParseIdentifierList(const std::string& text, int& i)
 {
 	std::string identifier;
 	while (isalpha(text[i]) || text[i] == ',' || text[i] == ' ')
 	{
 		identifier += text[i++];
 	}
-	//std::cout << identifier << std::endl;
-	return identifier;
+	return true;
 }
 
 bool ParseRav(const std::string& text, int& i)
@@ -247,7 +242,10 @@ bool ParseRav(const std::string& text, int& i)
 void ParseVar(const std::string& text, int& i)
 {
 	DeleteSpaces(text, i);
-	Expect("VAR", text, i);
+	if (!Expect("VAR", text, i))
+	{
+		return;
+	}
 	while (true)
 	{
 		DeleteSpaces(text, i);
@@ -255,13 +253,20 @@ void ParseVar(const std::string& text, int& i)
 		{
 			break;
 		}
-		ParseIdentifierList(text, i);
-
+		if (!ParseIdentifierList(text, i))
+		{
+			return;
+		}
 		DeleteSpaces(text, i);
-		Expect(":", text, i);
-
+		if (!Expect(":", text, i))
+		{
+			return;
+		}
 		DeleteSpaces(text, i);
-		const std::string type = ParseType(text, i);
+		if (!ParseType(text, i))
+		{
+			return;
+		}
 
 		DeleteSpaces(text, i);
 		if (text[i] == ';')

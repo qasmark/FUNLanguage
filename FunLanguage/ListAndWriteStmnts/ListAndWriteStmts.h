@@ -1,8 +1,6 @@
 ﻿#include <iostream>
 #include <string>
-
-const std::string READ_TERMINAL = "READ(";
-const std::string WRITE_TERMINAL = "WRITE(";
+#include "../include.h"
 
 const std::string SYNTAX_ERROR_READ = "Syntax error: expected 'READ(', line: pos:";
 

@@ -6,8 +6,11 @@
 #include <map>
 #include <iostream>
 #include <regex>
-#include "ListAndWriteStmnts/ListAndWriteStmts.h"
+#include "include.h"
+
 #include "ForParser/ForParser.h"
+#include "ListAndWriteStmnts/ListAndWriteStmts.h"
+
 
 std::vector<std::string> ParseString(std::string fileName)
 {
@@ -118,7 +121,7 @@ bool syntaxAnalyzer(const std::vector<std::string>& tokens) {
                 std::cerr << "Error: THEN without IF\n";
             }
             else if (token.find("FOR") != std::string::npos) {
-                if (!ParseFOR(token))
+                if (!ParseFor(token))
                 {
                     return false;
                 }

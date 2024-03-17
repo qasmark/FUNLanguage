@@ -59,6 +59,9 @@
     <ClInclude Include="whilePart\while.h">
       <Filter>Файлы заголовков\WhilePart</Filter>
     </ClInclude>
+    <ClInclude Include="include.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input_code.txt" />
