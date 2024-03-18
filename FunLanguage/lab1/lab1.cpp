@@ -185,7 +185,7 @@ bool parseNoc(const std::string& text , int& i)
 	return false;
 }
 
-void parseConstants(const std::string& text , int& i)
+bool parseConstants(const std::string& text , int& i)
 {
 	deleteSpaces(text , i);
 	expect("CONST" , text , i);
@@ -194,23 +194,23 @@ void parseConstants(const std::string& text , int& i)
 		deleteSpaces(text , i);
 		if (parseNoc(text , i))
 		{
-			break;
+			return false;
 		}
 		if (!parseIdentifier(text , i))
 		{
-			return;
+			return false;
 		}
 
 		deleteSpaces(text , i);
 		if (!expect(":" , text , i))
 		{
-			return;
+			return false;
 		}
 
 		deleteSpaces(text , i);
 		if (!parseType(text , i))
 		{
-			return;
+			return false;
 		}
 
 		deleteSpaces(text , i);
@@ -222,9 +222,10 @@ void parseConstants(const std::string& text , int& i)
 		deleteSpaces(text , i);
 		if (parseNoc(text , i))
 		{
-			break;
+			return true;
 		}
 	}
+
 }
 
 bool parseIdentifierList(const std::string& text , int& i)
@@ -248,33 +249,33 @@ bool parseRav(const std::string& text , int& i)
 	return false;
 }
 
-void parseVar(const std::string& text , int& i)
+bool parseVar(const std::string& text , int& i)
 {
 	deleteSpaces(text , i);
 	if (!expect("VAR" , text , i))
 	{
-		return;
+		return false;
 	}
 	while (true)
 	{
 		deleteSpaces(text , i);
 		if (parseRav(text , i))
 		{
-			break;
+			return false;
 		}
 		if (!parseIdentifierList(text , i))
 		{
-			return;
+			return false;
 		}
 		deleteSpaces(text , i);
 		if (!expect(":" , text , i))
 		{
-			return;
+			return false;
 		}
 		deleteSpaces(text , i);
 		if (!parseType(text , i))
 		{
-			return;
+			return false;
 		}
 
 		deleteSpaces(text , i);
@@ -287,7 +288,7 @@ void parseVar(const std::string& text , int& i)
 		deleteSpaces(text , i);
 		if (parseRav(text , i))
 		{
-			break;
+			return true;
 		}
 	}
 }
@@ -303,9 +304,15 @@ bool DCLS(std::ifstream& file)
 	deleteSpaces(text , i);
 	if (text[i] == 'C')
 	{
-		parseConstants(text , i);
+		if (!parseConstants(text , i))
+		{
+			return false;
+		}
 	}
-	parseVar(text , i);
+	if (!parseVar(text , i))
+	{
+		return false;
+	}
 	return true;
 }
 
