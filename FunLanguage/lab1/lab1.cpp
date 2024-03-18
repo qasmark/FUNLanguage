@@ -58,6 +58,16 @@ bool parseType(const std::string& text , int& i)
 	return parseValue(text , i , type);
 }
 
+bool parseType2(const std::string& text , int& i)
+{
+	std::string type;
+	while (isalpha(text[i]))
+	{
+		type += text[i++];
+	}
+	return true;
+}
+
 bool parseInt(const std::string& text , int& i)
 {
 	std::string value;
@@ -192,10 +202,11 @@ bool parseConstants(const std::string& text , int& i)
 	while (true)
 	{
 		deleteSpaces(text , i);
-		if (parseNoc(text , i))
+		/*if (parseNoc(text , i))
 		{
-			return false;
-		}
+			return true;
+		}*/
+
 		if (!parseIdentifier(text , i))
 		{
 			return false;
@@ -259,10 +270,10 @@ bool parseVar(const std::string& text , int& i)
 	while (true)
 	{
 		deleteSpaces(text , i);
-		if (parseRav(text , i))
+		/*if (parseRav(text , i))
 		{
-			return false;
-		}
+			return true;
+		}*/
 		if (!parseIdentifierList(text , i))
 		{
 			return false;
@@ -273,7 +284,7 @@ bool parseVar(const std::string& text , int& i)
 			return false;
 		}
 		deleteSpaces(text , i);
-		if (!parseType(text , i))
+		if (!parseType2(text , i))
 		{
 			return false;
 		}
@@ -311,8 +322,10 @@ bool DCLS(std::ifstream& file)
 	}
 	if (!parseVar(text , i))
 	{
+		std::cout << "helo";
 		return false;
 	}
+
 	return true;
 }
 
@@ -326,7 +339,9 @@ int main()
 	{
 		return 1;
 	}
-
-	DCLS(file);
+	if (DCLS(file))
+	{
+		std::cout << "a";
+	}
 
 }

@@ -1,8 +1,9 @@
 CONST 
 	mathPI : double = 3.14;
-mathE : float = 2.718
+	mathE : float = 2.718
 NOC
-VARa b, c: int;
-address, location: string;
-statusOfWork: bool
+VAR 
+	a, b, c : int;
+	address, location : string;
+	statusOfWork : bool
 RAV
